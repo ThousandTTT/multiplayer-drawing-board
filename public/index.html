@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Multiplayer Drawing Board</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <h1>🎨 Multiplayer Drawing Board</h1>
+
+    <div class="room-panel">
+
+        <input
+            type="text"
+            id="username"
+            placeholder="Your Name">
+
+        <input
+            type="text"
+            id="roomCode"
+            placeholder="Room Code">
+
+        <button id="createRoom">
+            Create Room
+        </button>
+
+        <button id="joinRoom">
+            Join Room
+        </button>
+
+    </div>
+
+    <div class="main-container">
+
+        <div class="board-section">
+
+            <div class="toolbar">
+
+                <label>Color</label>
+
+                <input
+                    type="color"
+                    id="colorPicker"
+                    value="#000000">
+
+                <label>Brush</label>
+
+                <input
+                    type="range"
+                    id="brushSize"
+                    min="1"
+                    max="20"
+                    value="3">
+
+                <button id="eraser">
+                    Eraser
+                </button>
+
+                <button id="clear">
+                    Clear Board
+                </button>
+
+            </div>
+
+            <canvas id="board"></canvas>
+
+        </div>
+
+        <div class="chat-section">
+
+            <h2>💬 Room Chat</h2>
+
+            <div id="chatMessages"></div>
+
+            <div class="chat-input">
+
+                <input
+                    type="text"
+                    id="chatInput"
+                    placeholder="Type a message...">
+
+                <button id="sendMessage">
+                    Send
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="js/socket.js"></script>
+    <script src="js/drawing.js"></script>
+    <script src="js/room.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
