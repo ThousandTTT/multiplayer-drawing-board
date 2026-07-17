@@ -8,20 +8,22 @@ const ctx = canvas.getContext("2d");
 canvas.width = 1000;
 canvas.height = 600;
 
+// Prevent page scrolling while drawing on touch devices
+canvas.style.touchAction = "none";
+
 // =========================
 // Drawing State
 // =========================
 
 let drawing = false;
-
 let lastX = 0;
 let lastY = 0;
 
 // =========================
-// Mouse Position
+// Get Pointer Position
 // =========================
 
-function getMousePosition(event) {
+function getPointerPosition(event) {
 
     const rect = canvas.getBoundingClientRect();
 
@@ -56,19 +58,25 @@ function drawLine(x0, y0, x1, y1, color, size) {
 
     ctx.lineCap = "round";
 
+    ctx.lineJoin = "round";
+
     ctx.stroke();
 
 }
 
 // =========================
-// Mouse Down
+// Pointer Down
 // =========================
 
-canvas.addEventListener("mousedown", (event) => {
+canvas.addEventListener("pointerdown", (event) => {
+
+    event.preventDefault();
 
     drawing = true;
 
-    const pos = getMousePosition(event);
+    canvas.setPointerCapture(event.pointerId);
+
+    const pos = getPointerPosition(event);
 
     lastX = pos.x;
     lastY = pos.y;
@@ -76,25 +84,28 @@ canvas.addEventListener("mousedown", (event) => {
 });
 
 // =========================
-// Mouse Move
+// Pointer Move
 // =========================
 
-canvas.addEventListener("mousemove", (event) => {
+canvas.addEventListener("pointermove", (event) => {
 
     if (!drawing) return;
 
-    const pos = getMousePosition(event);
+    event.preventDefault();
 
-    const currentX = pos.x;
-    const currentY = pos.y;
+    const pos = getPointerPosition(event);
 
     drawLine(
+
         lastX,
         lastY,
-        currentX,
-        currentY,
+
+        pos.x,
+        pos.y,
+
         currentColor,
         currentBrushSize
+
     );
 
     sendDraw({
@@ -102,8 +113,8 @@ canvas.addEventListener("mousemove", (event) => {
         x0: lastX,
         y0: lastY,
 
-        x1: currentX,
-        y1: currentY,
+        x1: pos.x,
+        y1: pos.y,
 
         color: currentColor,
 
@@ -111,27 +122,37 @@ canvas.addEventListener("mousemove", (event) => {
 
     });
 
-    lastX = currentX;
-    lastY = currentY;
+    lastX = pos.x;
+    lastY = pos.y;
 
 });
 
 // =========================
-// Mouse Up
+// Pointer Up
 // =========================
 
-window.addEventListener("mouseup", () => {
+function stopDrawing(event) {
 
     drawing = false;
 
-});
+    try {
+
+        canvas.releasePointerCapture(event.pointerId);
+
+    } catch (e) {}
+
+}
+
+canvas.addEventListener("pointerup", stopDrawing);
+canvas.addEventListener("pointercancel", stopDrawing);
+canvas.addEventListener("pointerleave", stopDrawing);
 
 // =========================
-// Mouse Leave
+// Resize Canvas
 // =========================
 
-canvas.addEventListener("mouseleave", () => {
+window.addEventListener("resize", () => {
 
-    drawing = false;
+    // Reserved for future responsive scaling.
 
 });
